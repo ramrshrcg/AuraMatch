@@ -11,6 +11,9 @@ import FaceData from "./model/facedB.js";
 import Beard from "./model/beardModel.js";
 import Glass from "./model/glassModel.js";
 import Hair from "./model/hairModel.js";
+//route import
+import home from "./router/home.js";
+import enter from "./router/enter.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -20,6 +23,9 @@ const upload = multer({ storage: storage });
 app.use(express.json());
 app.use(cors());
 app.use(express.static("./storage"));
+
+app.use("/", home);
+app.use("/enter", enter);
 
 app.post("/enter/face", upload.single("image"), async (req, res) => {
   const { faceshape, gender } = req.body;
@@ -39,43 +45,24 @@ app.post("/enter/face", upload.single("image"), async (req, res) => {
   });
 });
 
-app.post("/enter/beard", upload.single("image"), async (req, res) => {
-  const { faceshape, gender, beardstyle, description } = req.body;
-  const image = req.file.filename;
+// app.post("/enter/glass", upload.single("image"), async (req, res) => {
+//   const { faceshape, gender, glassstyle, description } = req.body;
+//   const image = req.file.filename;
 
-  console.log(req.body);
+//   console.log(req.body);
 
-  await Beard.create({
-    faceshape,
-    gender,
-    image,
-    beardstyle,
-    description,
-  });
+//   await Glass.create({
+//     faceshape,
+//     gender,
+//     image,
+//     glassstyle,
+//     description,
+//   });
 
-  res.status(200).json({
-    message: "beard  done",
-  });
-});
-
-app.post("/enter/glass", upload.single("image"), async (req, res) => {
-  const { faceshape, gender, glassstyle, description } = req.body;
-  const image = req.file.filename;
-
-  console.log(req.body);
-
-  await Glass.create({
-    faceshape,
-    gender,
-    image,
-    glassstyle,
-    description,
-  });
-
-  res.status(200).json({
-    message: "glass  done",
-  });
-});
+//   res.status(200).json({
+//     message: "glass  done",
+//   });
+// });
 
 app.get("/api/users", async (req, res) => {
   const { faceshape, gender } = req.query;
