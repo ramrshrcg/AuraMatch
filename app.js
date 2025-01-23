@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import connecttodB from "./connectToDb/index.js";
 import dotenv from "dotenv";
 import { storage, multer } from "./middleware/multerConfig.js";
-import FaceData from "./model/facedB.js";
+// import FaceData from "./model/facedB.js";
 import Beard from "./model/beardModel.js";
 import Glass from "./model/glassModel.js";
 import Hair from "./model/hairModel.js";
@@ -83,7 +83,7 @@ app.post("/enter/hair", upload.single("image"), async (req, res) => {
 
   console.log(req.body);
 
-  await Beard.create({
+  await Hair.create({
     faceshape,
     gender,
     image,
@@ -92,7 +92,7 @@ app.post("/enter/hair", upload.single("image"), async (req, res) => {
   });
 
   res.status(200).json({
-    message: "beard  done",
+    message: "hair  done",
   });
 });
 
@@ -104,52 +104,70 @@ app.get("/all", async (req, res) => {
   });
 });
 
+// app.get("/api/users", async (req, res) => {
+//   const { faceshape, gender } = req.query;
+//   console.log(req.query);
+
+//   const filteredGlass = await Glass.find({ gender, faceshape });
+//   const filteredBread = await Beard.find({ gender, faceshape });
+//   const filteredHair = await Hair.find({ gender, faceshape });
+
+//   //compress the image
+//   const resizeImages = async (data) => {
+//     return Promise.all(
+//       data.map(async (item) => {
+//         if (item.image) {
+//           // Assuming `image` contains the file path
+//           const filePath = path.resolve("./storage", item.image);
+//           try {
+//             // Resize the image to 240p height
+//             const resizedBuffer = await sharp(filePath)
+//               .resize({ height: 240 })
+//               .toBuffer();
+
+//             // Convert to Base64 string
+//             const resizedImage = `data:image/jpeg;base64,${resizedBuffer.toString(
+//               "base64"
+//             )}`;
+
+//             // Return updated item with resized image
+//             return { ...item.toObject(), image: resizedImage };
+//           } catch (err) {
+//             console.error(`Error processing image: ${filePath}`, err);
+//             // Return item without modifying the image if resizing fails
+//             return { ...item.toObject(), image: null };
+//           }
+//         }
+//         return item;
+//       })
+//     );
+//   };
+//   const resizedBread = await resizeImages(filteredBread);
+//   const resizedGlass = await resizeImages(filteredGlass);
+//   const resizedHair = await resizeImages(filteredHair);
+
+//   res.status(200).json({
+//     filteredBread: resizedBread,
+//     filteredGlass: resizedGlass,
+//     filteredHair: resizedHair,
+//   });
+// });
+
 app.get("/api/users", async (req, res) => {
   const { faceshape, gender } = req.query;
-  console.log(req.query);
+  console.log(faceshape);
 
   const filteredGlass = await Glass.find({ gender, faceshape });
   const filteredBread = await Beard.find({ gender, faceshape });
-  const filteredHair = await Hair.find({ gender, faceshape });
+  // const filteredHair = await Hair.find({ gender, faceshape });
 
-  //compress the image
-  const resizeImages = async (data) => {
-    return Promise.all(
-      data.map(async (item) => {
-        if (item.image) {
-          // Assuming `image` contains the file path
-          const filePath = path.resolve("./storage", item.image);
-          try {
-            // Resize the image to 240p height
-            const resizedBuffer = await sharp(filePath)
-              .resize({ height: 240 })
-              .toBuffer();
-
-            // Convert to Base64 string
-            const resizedImage = `data:image/jpeg;base64,${resizedBuffer.toString(
-              "base64"
-            )}`;
-
-            // Return updated item with resized image
-            return { ...item.toObject(), image: resizedImage };
-          } catch (err) {
-            console.error(`Error processing image: ${filePath}`, err);
-            // Return item without modifying the image if resizing fails
-            return { ...item.toObject(), image: null };
-          }
-        }
-        return item;
-      })
-    );
-  };
-  const resizedBread = await resizeImages(filteredBread);
-  const resizedGlass = await resizeImages(filteredGlass);
-  const resizedHair = await resizeImages(filteredHair);
+  console.log(filteredGlass);
+  console.log(filteredBread);
 
   res.status(200).json({
-    filteredBread: resizedBread,
-    filteredGlass: resizedGlass,
-    filteredHair: resizedHair,
+    filteredBread: filteredBread,
+    filteredGlass: filteredGlass,
+    filteredHair: filteredHair,
   });
 });
 
@@ -173,6 +191,17 @@ app.get("/api/users/:id", async (req, res) => {
     console.log(data);
     res.status(200).json(data);
   }
+});
+
+app.post("/api/users", async (req, res) => {
+  const { faceshape, gender } = req.body;
+
+  const filteredGlass = await Glass.find();
+
+  res.status(200).json({
+    message: "this",
+    filteredGlass,
+  });
 });
 
 app.listen(port, async () => {
