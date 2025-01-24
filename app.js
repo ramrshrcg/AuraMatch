@@ -21,23 +21,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("./storage"));
 
-// app.post("/enter/face", upload.single("image"), async (req, res) => {
-//   const { faceshape, gender } = req.body;
-//   const image = req.file.filename;
 
-//   console.log(req.body);
-//   console.log(req.file.filename);
-
-//   await FaceData.create({
-//     faceshape,
-//     gender,
-//     image,
-//   });
-
-//   res.status(200).json({
-//     message: "okay done",
-//   });
-// });
 
 app.post("/enter/beard", upload.single("image"), async (req, res) => {
   const { faceshape, gender, beardstyle, description } = req.body;
@@ -104,65 +88,21 @@ app.get("/all", async (req, res) => {
   });
 });
 
-// app.get("/api/users", async (req, res) => {
-//   const { faceshape, gender } = req.query;
-//   console.log(req.query);
-
-//   const filteredGlass = await Glass.find({ gender, faceshape });
-//   const filteredBread = await Beard.find({ gender, faceshape });
-//   const filteredHair = await Hair.find({ gender, faceshape });
-
-//   //compress the image
-//   const resizeImages = async (data) => {
-//     return Promise.all(
-//       data.map(async (item) => {
-//         if (item.image) {
-//           // Assuming `image` contains the file path
-//           const filePath = path.resolve("./storage", item.image);
-//           try {
-//             // Resize the image to 240p height
-//             const resizedBuffer = await sharp(filePath)
-//               .resize({ height: 240 })
-//               .toBuffer();
-
-//             // Convert to Base64 string
-//             const resizedImage = `data:image/jpeg;base64,${resizedBuffer.toString(
-//               "base64"
-//             )}`;
-
-//             // Return updated item with resized image
-//             return { ...item.toObject(), image: resizedImage };
-//           } catch (err) {
-//             console.error(`Error processing image: ${filePath}`, err);
-//             // Return item without modifying the image if resizing fails
-//             return { ...item.toObject(), image: null };
-//           }
-//         }
-//         return item;
-//       })
-//     );
-//   };
-//   const resizedBread = await resizeImages(filteredBread);
-//   const resizedGlass = await resizeImages(filteredGlass);
-//   const resizedHair = await resizeImages(filteredHair);
-
-//   res.status(200).json({
-//     filteredBread: resizedBread,
-//     filteredGlass: resizedGlass,
-//     filteredHair: resizedHair,
-//   });
-// });
 
 app.get("/api/users", async (req, res) => {
   const { faceshape, gender } = req.query;
   console.log(faceshape);
 
-  const filteredGlass = await Glass.find({ gender, faceshape });
-  const filteredBread = await Beard.find({ gender, faceshape });
-  // const filteredHair = await Hair.find({ gender, faceshape });
-
-  console.log(filteredGlass);
-  console.log(filteredBread);
+  let query = {};
+  if (faceshape) {
+    query.faceshape = faceshape;
+  }
+  if (gender) {
+    query.gender = gender;
+  }
+  const filteredGlass = await Glass.find(query);
+  const filteredBread = await Beard.find(query);
+  const filteredHair = await Hair.find(query);
 
   res.status(200).json({
     filteredBread: filteredBread,
@@ -193,16 +133,6 @@ app.get("/api/users/:id", async (req, res) => {
   }
 });
 
-app.post("/api/users", async (req, res) => {
-  const { faceshape, gender } = req.body;
-
-  const filteredGlass = await Glass.find();
-
-  res.status(200).json({
-    message: "this",
-    filteredGlass,
-  });
-});
 
 app.listen(port, async () => {
   console.log(`server is running on port ${port}`);
