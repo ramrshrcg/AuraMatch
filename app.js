@@ -112,6 +112,7 @@ app.get("/api/users", async (req, res) => {
   const filteredBread = await Beard.find({ gender, faceshape });
   const filteredHair = await Hair.find({ gender, faceshape });
 
+  
   res.status(200).json({
     filteredBread,
     filteredGlass,
