@@ -7,5 +7,6 @@ import { storage, multer } from "../middleware/multerConfig.js";
 const upload = multer({ storage: storage });
 
 router.get("/glass", upload.single("image"), glassController);
+router.get("/beard", upload.single("image"), glassController);
 
 export default router;

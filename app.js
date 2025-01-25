@@ -14,6 +14,7 @@ import Hair from "./model/hairModel.js";
 //route import
 import home from "./router/home.js";
 import enter from "./router/enter.js";
+import getstyle from "./router/getstyle.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use(express.static("./storage"));
 
 app.use("/", home);
 app.use("/enter", enter);
+app.use("/api", getstyle);
 
 app.post("/enter/face", upload.single("image"), async (req, res) => {
   const { faceshape, gender } = req.body;
@@ -68,72 +70,55 @@ app.get("/api/users", async (req, res) => {
   const { faceshape, gender } = req.query;
   console.log(req.query);
 
-  const filteredBread = await Beard.find({ gender, faceshape });
-  const filteredGlass = await Glass.find({ gender, faceshape });
-  const filteredHair = await Hair.find({ gender, faceshape });
+  let query = {};
+  if (faceshape) {
+    query.faceshape = faceshape;
+  }
+  if (gender) {
+    query.gender = gender;
+  }
 
-  //compress the image
-  const resizeImages = async (data) => {
-    return Promise.all(
-      data.map(async (item) => {
-        if (item.image) {
-          // Assuming `image` contains the file path
-          const filePath = path.resolve("./storage", item.image);
-          try {
-            // Resize the image to 240p height
-            const resizedBuffer = await sharp(filePath)
-              .resize({ height: 240 })
-              .toBuffer();
+  const filteredBread = await Beard.find(query);
+  const filteredGlass = await Glass.find(query);
+  const filteredHair = await Hair.find(query);
 
-            // Convert to Base64 string
-            const resizedImage = `data:image/jpeg;base64,${resizedBuffer.toString(
-              "base64"
-            )}`;
-
-            // Return updated item with resized image
-            return { ...item.toObject(), image: resizedImage };
-          } catch (err) {
-            console.error(`Error processing image: ${filePath}`, err);
-            // Return item without modifying the image if resizing fails
-            return { ...item.toObject(), image: null };
-          }
-        }
-        return item;
-      })
-    );
-  };
-  const resizedBread = await resizeImages(filteredBread);
-  const resizedGlass = await resizeImages(filteredGlass);
-  const resizedHair = await resizeImages(filteredHair);
+  const breadlength = filteredBread.length;
+  const glasslength = filteredGlass.length;
+  const hairlength = filteredHair.length;
+  const totalLength = breadlength + glasslength + hairlength;
 
   res.status(200).json({
-    filteredBread: resizedBread,
-    filteredGlass: resizedGlass,
-    filteredHair: resizedHair,
+    totalLength,
+    breadlength,
+    filteredBread,
+    glasslength,
+    filteredGlass,
+    hairlength,
+    filteredHair,
   });
 });
 
-app.get("/api/users/:id", async (req, res) => {
-  const id = req.params.id;
-  const { box } = req.query;
-  console.log(box);
+// app.get("/api/users/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const { box } = req.query;
+//   console.log(box);
 
-  if (box === "beard") {
-    const data = await Beard.findById(id);
-    console.log(data);
-    res.status(200).json(data);
-  }
-  if (box === "glass") {
-    const data = await Glass.findById(id);
-    console.log(data);
-    res.status(200).json(data);
-  }
-  if (box === "hair") {
-    const data = await Hair.findById(id);
-    console.log(data);
-    res.status(200).json(data);
-  }
-});
+//   if (box === "beard") {
+//     const data = await Beard.findById(id);
+//     console.log(data);
+//     res.status(200).json(data);
+//   }
+//   if (box === "glass") {
+//     const data = await Glass.findById(id);
+//     console.log(data);
+//     res.status(200).json(data);
+//   }
+//   if (box === "hair") {
+//     const data = await Hair.findById(id);
+//     console.log(data);
+//     res.status(200).json(data);
+//   }
+// });
 
 app.listen(port, async () => {
   console.log(`server is running on port ${port}`);
