@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const hairSchema = new mongoose.Schema({
   faceshape: String,
   gender: String,
-  Hairstyle: String,
+  hairstyle: String,
   image: String,
   description: String,
 });
