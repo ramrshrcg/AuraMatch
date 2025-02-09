@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import connecttodB from "./connectToDb/index.js";
 import dotenv from "dotenv";
 import { storage, multer } from "./middleware/multerConfig.js";
-import FaceData from "./model/facedB.js";
+
 import Beard from "./model/beardModel.js";
 import Glass from "./model/glassModel.js";
 import Hair from "./model/hairModel.js";
@@ -21,23 +21,6 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("./storage"));
 
-// app.post("/enter/face", upload.single("image"), async (req, res) => {
-//   const { faceshape, gender } = req.body;
-//   const image = req.file.filename;
-
-//   console.log(req.body);
-//   console.log(req.file.filename);
-
-//   await FaceData.create({
-//     faceshape,
-//     gender,
-//     image,
-//   });
-
-//   res.status(200).json({
-//     message: "okay done",
-//   });
-// });
 
 app.post("/enter/beard", upload.single("image"), async (req, res) => {
   const { faceshape, gender, beardstyle, description } = req.body;
@@ -144,5 +127,12 @@ app.get("/api/users/:id", async (req, res) => {
 
 app.listen(port, async () => {
   console.log(`server is running on port ${port}`);
-  await mongoose.connect(process.env.mongodb_url);
+  try{
+    await mongoose.connect(process.env.mongodb_url);
+    console.log('connect to db');
+
+  }catch(error)
+  {
+    console.log('not connect to db');
+  }
 });
