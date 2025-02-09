@@ -95,10 +95,19 @@ app.get("/api/users", async (req, res) => {
   const filteredBread = await Beard.find({ gender, faceshape });
   const filteredHair = await Hair.find({ gender, faceshape });
 
+  const lengthglass= filteredGlass.length
+  const lengthbeard= filteredBread.length
+  const lengthhair= filteredHair.length
+  const total= lengthglass+lengthbeard+lengthhair
+
   
   res.status(200).json({
+    total,
+    lengthbeard,
     filteredBread,
+    lengthglass,
     filteredGlass,
+    lengthhair,
     filteredHair,
   });
 });
