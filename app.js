@@ -80,12 +80,24 @@ app.post("/enter/hair", upload.single("image"), async (req, res) => {
 });
 
 app.get("/all", async (req, res) => {
-  const data = await Glass.find();
-  const length = data.length;
+  const dataglass = await Glass.find();
+  const len_glass = dataglass.length;
+  const databeard = await Beard.find();
+  const len_beard = databeard.length;
+  const datahair = await Hair.find();
+  const len_hair = datahair.length;
+
+const len_total=len_beard+len_glass+len_hair  
   res.status(200).json({
     message: "this",
-    length,
-    data,
+    len_total,
+    len_glass,
+    dataglass,
+    len_beard,
+    databeard,
+    len_hair,
+    datahair,
+    
   });
 });
 
