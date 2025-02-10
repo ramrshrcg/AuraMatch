@@ -81,8 +81,10 @@ app.post("/enter/hair", upload.single("image"), async (req, res) => {
 
 app.get("/all", async (req, res) => {
   const data = await Glass.find();
+  const length = data.length;
   res.status(200).json({
     message: "this",
+    length,
     data,
   });
 });
