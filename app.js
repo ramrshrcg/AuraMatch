@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
-import sharp from "sharp";
-import path from "path";
+
 import mongoose from "mongoose";
 
-import connecttodB from "./connectToDb/index.js";
 import dotenv from "dotenv";
 import { storage, multer } from "./middleware/multerConfig.js";
 
