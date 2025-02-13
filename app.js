@@ -29,6 +29,7 @@ app.use("/enter", glassrouter);
 app.use("/enter", beardrouter);
 
 app.use("/api", getstyle);
+
 app.use("/user", login)
 app.use("/user", register)
 
