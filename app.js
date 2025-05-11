@@ -10,6 +10,8 @@ import home from "./router/home.js";
 import { beardrouter, glassrouter, hairrouter } from "./router/enter.js";
 import getstyle from "./router/getstyle.js";
 import { login, register } from "./router/login_reg.js";
+import schedule from "./services/scheduler.js";
+import connecttodB from "./connectToDb/index.js";
 
 //use 
 const app = express();
@@ -37,5 +39,7 @@ app.use("/user", register)
 //server 
 app.listen(port, async () => {
   console.log(`server is running on port ${port}`);
-  await mongoose.connect(process.env.mongodb_url);
+  connecttodB();
+  // await mongoose.connect(process.env.mongodb_url);
+  schedule;
 });
