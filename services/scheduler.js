@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 import Glass from '../model/glassModel.js';
+import axios from 'axios';
 
 // Every 14 minutes
 const schedule= cron.schedule('*/14 * * * *', async () => {
@@ -8,8 +9,9 @@ const schedule= cron.schedule('*/14 * * * *', async () => {
   try {
     
     const result = await Glass.find();
-    // console.log(result);
-    console.log('DB hit success:');
+    const webiste= axios.get("https://auramatch.onrender.com")
+
+    console.log('DB hit success:',webiste);
   } catch (err) {
     console.error('Error hitting DB:', err);
   }
