@@ -9,9 +9,9 @@ const schedule= cron.schedule('*/14 * * * *', async () => {
   try {
     
     const result = await Glass.find();
-    const webiste= axios.get("https://auramatch.onrender.com")
+    const webiste=  await axios.get("https://auramatch.onrender.com")
 
-    console.log('DB hit success:',webiste);
+    console.log('hit success:',webiste.status);
   } catch (err) {
     console.error('Error hitting DB:', err);
   }
